@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import {api} from '../../utils/Api';
-import {Card} from '../Card/Card';
+import {api} from '../utils/Api';
+import {Card} from './Card/Card';
 
 export const Main = (props) => {
   let [userName, setUserName] = useState('');
