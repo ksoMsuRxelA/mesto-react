@@ -1,4 +1,4 @@
-export const ImagePopup = (props) => {
+const ImagePopup = (props) => {
   const className = `popup popup_type_image ${Object.keys(props.card).length !== 0 ? 'popup_opened' : ''}`;
   return (
     <section className={className}>
@@ -10,3 +10,5 @@ export const ImagePopup = (props) => {
     </section>
   );
 }
+
+export default ImagePopup;

@@ -1,4 +1,4 @@
-export const PopupWithForm = (props) => {
+const PopupWithForm = (props) => {
   const className = `popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`;
 
   const handleClick = () => {
@@ -20,3 +20,5 @@ export const PopupWithForm = (props) => {
     </section>
   );
 }
+
+export default PopupWithForm;

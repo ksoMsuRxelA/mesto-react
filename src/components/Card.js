@@ -1,4 +1,4 @@
-export const Card = (props) => {
+const Card = (props) => {
   const handleClick = () => {
     props.onCardClick(props.card);
   };
@@ -13,3 +13,5 @@ export const Card = (props) => {
     </div>
   );
 }
+
+export default Card;
