@@ -3,10 +3,10 @@ import {api} from '../utils/Api';
 import Card from './Card';
 
 const Main = (props) => {
-  let [userName, setUserName] = useState('');
-  let [userDescription, setUserDescription] = useState('');
-  let [userAvatar, setUserAvatar] = useState('');
-  let [cards, setCards] = useState([]);
+  const [userName, setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     api.getUserInfo()

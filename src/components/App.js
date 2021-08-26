@@ -6,10 +6,10 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 
 function App() {
-  let [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
-  let [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
-  let [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  let [selectedCard, setSelectedCard] = useState({});
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
   const closeAllPopups = (props) => {
     if(props.name === 'edit') {
