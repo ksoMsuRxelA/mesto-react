@@ -19,7 +19,7 @@ function App() {
     } else if(props.name === 'avatar') {
       setIsEditAvatarPopupOpen(!props.isOpen);
     } else { //to imagePopup
-      setSelectedCard({});
+      setSelectedCard(null); //остальные некритические замечания я исправлю чуть позже самостоятельно. Спасибо что указали на них :)
     }
   }
 

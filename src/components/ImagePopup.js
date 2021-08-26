@@ -1,6 +1,6 @@
 const ImagePopup = (props) => {
-  const className = `popup popup_type_image ${Object.keys(props.card).length !== 0 ? 'popup_opened' : ''}`;
-  return (
+  const className = `popup popup_type_image ${props.card !== null ? 'popup_opened' : ''}`;
+  return ( props.card !== null &&
     <section className={className}>
       <figure className="popup__image-container">
         <img src={props.card.link} alt="some" className="popup__image" />
