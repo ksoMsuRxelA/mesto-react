@@ -9,18 +9,25 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedCard, setSelectedCard] = useState({});
 
   const closeAllPopups = (props) => {
-    if(props.name === 'edit') {
-      setIsEditProfilePopupOpen(!props.isOpen);
-    } else if(props.name === 'new-card') {
-      setIsAddPlacePopupOpen(!props.isOpen);
-    } else if(props.name === 'avatar') {
-      setIsEditAvatarPopupOpen(!props.isOpen);
-    } else { //to imagePopup
-      setSelectedCard(null); //остальные некритические замечания я исправлю чуть позже самостоятельно. Спасибо что указали на них :)
-    }
+    setIsEditProfilePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setSelectedCard({});
+  }
+
+   const openEditAvatarPopup = () => {
+    setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
+  }
+
+  const openEditProfilePopup = () => {
+    setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
+  }
+
+  const openAddPlacePopup = () => {
+    setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   return (
@@ -28,18 +35,10 @@ function App() {
       <div className="page">
         <Header />
         <Main 
-          onEditAvatar={() => {
-            setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-          }} 
-          onEditProfile={() => {
-            setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-          }}
-          onAddPlace={() => {
-            setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
-          }}
-          handleCardClick={(card) => {
-            setSelectedCard(card);
-          }}
+          onEditAvatar={openEditAvatarPopup} 
+          onEditProfile={openEditProfilePopup}
+          onAddPlace={openAddPlacePopup}
+          handleCardClick={setSelectedCard}
         />
         <Footer filler="&copy; 2021 Mesto Russia" />
 
@@ -72,7 +71,7 @@ function App() {
         </PopupWithForm>
 
         <PopupWithForm 
-          onClose={true}
+          onClose={closeAllPopups}
           isOpen={false} 
           name="delete" 
           title="Вы уверены?" 
