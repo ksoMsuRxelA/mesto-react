@@ -1,24 +1,13 @@
-import {useEffect, useState} from 'react';
-import {api} from '../utils/Api';
+import { useEffect, useState, useContext } from 'react';
+import { api } from '../utils/Api';
 import Card from './Card';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
-  const [userName, setUserName] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
   const [cards, setCards] = useState([]);
+  const user = useContext(CurrentUserContext);
 
   useEffect(() => {
-    api.getUserInfo()
-      .then((resUserInfo) => {
-        setUserName(resUserInfo.name);
-        setUserDescription(resUserInfo.about);
-        setUserAvatar(resUserInfo.avatar);
-      })
-      .catch((err) => {
-        console.log(`Ошибка при первичном получении данных пользователя: ${err}`);
-      });
-    
     api.getInitialCards()
       .then((resInitialCards) => {
         setCards(resInitialCards);
@@ -32,11 +21,11 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
     <main className="content page__content">
 
       <section className="profile content__profile">
-        <div className="profile__avatar" onClick={onEditAvatar} style={{backgroundImage: `url(${userAvatar})`}}></div>
+        <div className="profile__avatar" onClick={onEditAvatar} style={{backgroundImage: `url(${user.userAvatar})`}}></div>
         <div className="profile__layout"> 
           <div className="profile__info">
-            <h1 className="profile__full-name">{userName}</h1>
-            <p className="profile__role">{userDescription}</p>
+            <h1 className="profile__full-name">{user.userName}</h1>
+            <p className="profile__role">{user.userDescription}</p>
           </div>
           <button type="button" aria-label="Редактировать профиль" className="profile__edit-button" onClick={onEditProfile}></button>
         </div>
