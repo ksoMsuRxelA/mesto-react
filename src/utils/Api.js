@@ -60,20 +60,36 @@ class Api {
       .then(this._checkResponse);
   }
 
-  putLike(cardId) {
-    return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
-      method: 'PUT',
-      headers: this._options.headers
-    })
-      .then(this._checkResponse);
-  }
+  // putLike(cardId) {
+  //   return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
+  //     method: 'PUT',
+  //     headers: this._options.headers
+  //   })
+  //     .then(this._checkResponse);
+  // }
 
-  deleteLike(cardId) {
-    return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
-      method: 'DELETE',
-      headers: this._options.headers
-    })
-      .then(this._checkResponse);
+  // deleteLike(cardId) {
+  //   return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
+  //     method: 'DELETE',
+  //     headers: this._options.headers
+  //   })
+  //     .then(this._checkResponse);
+  // }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    if(isLiked) { //case when the card is already liked: isLiked === true.
+      return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
+        method: 'DELETE',
+        headers: this._options.headers
+      })
+        .then(this._checkResponse);
+    } else { //case when the card isn't liked: isLiked === false.
+      return fetch(`${this._options.baseUrl}/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: this._options.headers
+      })
+        .then(this._checkResponse);
+    }
   }
 }
 

@@ -6,7 +6,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
   const [cards, setCards] = useState([]);
   const user = useContext(CurrentUserContext);
-
+  // console.log(user);
   useEffect(() => {
     api.getInitialCards()
       .then((resInitialCards) => {
@@ -16,6 +16,32 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
         console.log(`Ошибка при первичном получении карточек: ${err}`);
       });
   }, []); //like componentDidMount - empty array
+
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((like) => {
+      return like._id === user.userId;
+    });
+
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((cards) => {
+          return cards.map((tmpCard) => {
+            return tmpCard._id === card._id ? newCard : tmpCard;
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(`Ошибка при попытке удалении/установки лайка: ${err}.`);
+      })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteOwnerCard(card._id);
+    setCards(cards.filter((tmpCard) => {
+      return tmpCard._id !== card._id; 
+    }));
+  }
 
   return (
     <main className="content page__content">
@@ -35,7 +61,7 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
       <section className="elements content__elements">      
         {cards.map((card) => {
           return (
-            <Card key={card._id} card={card} onCardClick={handleCardClick} />
+            <Card key={card._id} card={card} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
         )})}
       </section>
     </main>

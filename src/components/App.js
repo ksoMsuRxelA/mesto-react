@@ -21,6 +21,7 @@ function App() {
           userName: resCurrentUser.name,
           userDescription: resCurrentUser.about,
           userAvatar: resCurrentUser.avatar,
+          userId: resCurrentUser._id,
         });
 
       })
