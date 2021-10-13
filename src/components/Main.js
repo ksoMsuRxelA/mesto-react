@@ -6,7 +6,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
   const [cards, setCards] = useState([]);
   const user = useContext(CurrentUserContext);
-  // console.log(user);
+
   useEffect(() => {
     api.getInitialCards()
       .then((resInitialCards) => {
@@ -20,7 +20,7 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((like) => {
-      return like._id === user.userId;
+      return like._id === user._id;
     });
 
     api.changeLikeCardStatus(card._id, isLiked)
@@ -45,13 +45,12 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick}) => {
 
   return (
     <main className="content page__content">
-
       <section className="profile content__profile">
-        <div className="profile__avatar" onClick={onEditAvatar} style={{backgroundImage: `url(${user.userAvatar})`}}></div>
+        <div className="profile__avatar" onClick={onEditAvatar} style={{backgroundImage: `url(${user.avatar})`}}></div>
         <div className="profile__layout"> 
           <div className="profile__info">
-            <h1 className="profile__full-name">{user.userName}</h1>
-            <p className="profile__role">{user.userDescription}</p>
+            <h1 className="profile__full-name">{user.name}</h1>
+            <p className="profile__role">{user.about}</p>
           </div>
           <button type="button" aria-label="Редактировать профиль" className="profile__edit-button" onClick={onEditProfile}></button>
         </div>
