@@ -6,6 +6,7 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -71,6 +72,55 @@ function App() {
       });
   }
 
+  //here starts cards adding code...
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    api.getInitialCards()
+      .then((resInitialCards) => {
+        setCards(resInitialCards);
+      })
+      .catch((err) => {
+        console.log(`Ошибка при первичном получении карточек: ${err}`);
+      });
+  }, []); //like componentDidMount - empty array
+
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((like) => {
+      return like._id === currentUser._id;
+    });
+
+    api.changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((cards) => {
+          return cards.map((tmpCard) => {
+            return tmpCard._id === card._id ? newCard : tmpCard;
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(`Ошибка при попытке удалении/установки лайка: ${err}.`);
+      })
+  }
+
+  function handleCardDelete(card) {
+    api.deleteOwnerCard(card._id);
+    setCards(cards.filter((tmpCard) => {
+      return tmpCard._id !== card._id; 
+    }));
+  }
+
+  const handleAddCard = (newCard) => {
+    api.postNewCard(newCard)
+      .then((resNewCard) => {
+        setCards([resNewCard, ...cards]);
+      })
+      .catch((err) => {
+        console.log(`Ошибка при попытке добавить новую карточку в начало списка: ${err}.`);
+      })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="wrapper">
@@ -81,6 +131,9 @@ function App() {
             onEditProfile={openEditProfilePopup}
             onAddPlace={openAddPlacePopup}
             handleCardClick={setSelectedCard}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
           />
           <Footer filler="&copy; 2021 Mesto Russia" />
 
@@ -88,7 +141,8 @@ function App() {
 
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
 
-          <PopupWithForm 
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddCard={handleAddCard} />
+          {/* <PopupWithForm 
             onClose={closeAllPopups} 
             isOpen={isAddPlacePopupOpen} 
             name="new-card" 
@@ -100,7 +154,7 @@ function App() {
               <span className="popup__error-element place-input-error"></span>
               <input id="url-input" type="url" placeholder="Ссылка на картинку" className="popup__input popup__input-link" name="link" required />
               <span className="popup__error-element url-input-error"></span>
-          </PopupWithForm>
+          </PopupWithForm> */}
 
           <PopupWithForm 
             onClose={closeAllPopups}
@@ -110,18 +164,6 @@ function App() {
             ariaLabel="Удалить карточку с фотографией" 
             buttonTitle="Да" 
           />
-
-          {/* <PopupWithForm
-            onClose={closeAllPopups} 
-            isOpen={isEditAvatarPopupOpen} 
-            name="avatar" 
-            title="Обновить аватар" 
-            ariaLabel="Изменить аватар" 
-            buttonTitle="Сохранить"
-          >
-              <input id="url-input-avatar" type="url" placeholder="Ссылка на картинку" className="popup__input popup__input_type_avatar popup__input-link" name="avatar" required />
-              <span className="popup__error-element url-input-avatar-error"></span>
-          </PopupWithForm> */}
 
           <ImagePopup 
             onClose={closeAllPopups}
