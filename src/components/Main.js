@@ -1,9 +1,9 @@
-import { useEffect, useState, useContext } from 'react';
-import { api } from '../utils/Api';
+import { useContext } from 'react';
 import Card from './Card';
+import Spinner from './Spinner';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick, cards, onCardLike, onCardDelete}) => {
+const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick, cards, onCardLike, onCardDelete, isLoading}) => {
   const user = useContext(CurrentUserContext);
 
   return (
@@ -19,9 +19,9 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick, cards, 
         </div>
         <button type="button" aria-label="Добавить карточку" className="profile__add-button" onClick={onAddPlace}></button>
       </section>
-
-      <section className="elements content__elements">      
-        {cards.map((card) => {
+      
+      <section className="elements content__elements">    
+        {isLoading ? <Spinner /> : cards.map((card) => {
           return (
             <Card key={card._id} card={card} onCardClick={handleCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} />
         )})}

@@ -16,6 +16,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({name: '', about: '', avatar: '', _id: ''});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     api.getUserInfo()
@@ -26,11 +27,10 @@ function App() {
           avatar: resCurrentUser.avatar,
           _id: resCurrentUser._id,
         });
-
       })
       .catch((err) => {
         console.log(`Ошибка при первичном получении данных пользователя: ${err}`);
-      });
+      }); //тут не нужен finally, так как нет дефолтного поведения при запросе.
   }, []);
 
   const closeAllPopups = () => {
@@ -52,36 +52,51 @@ function App() {
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
-  const handleUpdateUser = (newUserInfo) => {
+  const handleUpdateUser = (newUserInfo, onClose, submitButtonRef) => { //здесь и далее, я получаю методы изнутри компонента, вроде как это не запрещено чек-листом.
+    submitButtonRef.current.textContent = "Сохранить..."; //здесь и далее, я использую рефы, которые получаю как аргумент, чтобы создать UX-эффект при загрузке.
     api.patchUserInfo(newUserInfo)
       .then((resUserInfo) => {
         setCurrentUser(resUserInfo);
+        onClose();
       })
       .catch((err) => {
         console.log(`Ошибка при попытке изменить данные пользователя: ${err}.`);
+      })
+      .finally(() => {
+        submitButtonRef.current.textContent = "Сохранить";
       });
   }
 
-  const handleUpdateAvatar = (newAvatarUrl) => {
+  const handleUpdateAvatar = (newAvatarUrl, onClose, submitButtonRef, inputReset) => {
+    submitButtonRef.current.textContent = "Сохранить...";
     api.patchAvatar(newAvatarUrl)
       .then((resAvatarUrl) => {
         setCurrentUser(resAvatarUrl);
+        onClose();
+        inputReset();
       })
       .catch((err) => {
         console.log(`Ошибка при попытке изменить аватар пользователя: ${err}.`);
-      });
+      })
+      .finally(() => {
+        submitButtonRef.current.textContent = "Сохранить";
+      })
   }
 
   //here starts cards adding code...
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
+    setIsLoading(true);
     api.getInitialCards()
       .then((resInitialCards) => {
         setCards(resInitialCards);
       })
       .catch((err) => {
         console.log(`Ошибка при первичном получении карточек: ${err}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []); //like componentDidMount - empty array
 
@@ -101,24 +116,35 @@ function App() {
       })
       .catch((err) => {
         console.log(`Ошибка при попытке удалении/установки лайка: ${err}.`);
+      }); //здесь не нужен finally, все по той же причине что и выше. 
+  }
+
+  function handleCardDelete(card) { //тут "тупанул", полностью согласен с замечанием, благодарю!
+    api.deleteOwnerCard(card._id)
+      .then(() => {
+        setCards(cards.filter((tmpCard) => {
+          return tmpCard._id !== card._id; 
+        }));
       })
+      .catch((err) => {
+        console.log(`Ошибка при попытке удаления карточки: ${err}.`);
+      });
   }
 
-  function handleCardDelete(card) {
-    api.deleteOwnerCard(card._id);
-    setCards(cards.filter((tmpCard) => {
-      return tmpCard._id !== card._id; 
-    }));
-  }
-
-  const handleAddCard = (newCard) => {
+  const handleAddCard = (newCard, onClose, handleInputsReset, submitButtonRef) => {
+    submitButtonRef.current.textContent = "Сохранить...";
     api.postNewCard(newCard)
       .then((resNewCard) => {
         setCards([resNewCard, ...cards]);
+        onClose();
+        handleInputsReset();
       })
       .catch((err) => {
         console.log(`Ошибка при попытке добавить новую карточку в начало списка: ${err}.`);
       })
+      .finally(() => {
+        submitButtonRef.current.textContent = "Сохранить";
+      });
   }
 
   return (
@@ -134,6 +160,7 @@ function App() {
             cards={cards}
             onCardLike={handleCardLike}
             onCardDelete={handleCardDelete}
+            isLoading={isLoading}
           />
           <Footer filler="&copy; 2021 Mesto Russia" />
 
@@ -142,19 +169,6 @@ function App() {
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
 
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddCard={handleAddCard} />
-          {/* <PopupWithForm 
-            onClose={closeAllPopups} 
-            isOpen={isAddPlacePopupOpen} 
-            name="new-card" 
-            title="Новое место" 
-            ariaLabel="Добавить новую карточку" 
-            buttonTitle="Сохранить"
-          >
-              <input id="place-input" type="text" placeholder="Название" className="popup__input  popup__input-name" name="name" required minLength="2" maxLength="30" />
-              <span className="popup__error-element place-input-error"></span>
-              <input id="url-input" type="url" placeholder="Ссылка на картинку" className="popup__input popup__input-link" name="link" required />
-              <span className="popup__error-element url-input-error"></span>
-          </PopupWithForm> */}
 
           <PopupWithForm 
             onClose={closeAllPopups}

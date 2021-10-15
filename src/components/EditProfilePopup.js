@@ -1,17 +1,19 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import PopupWithForm from './PopupWithForm';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
   const [name, setName] = useState(""); 
   const [description, setDescription] = useState(""); 
+  const submitButtonRef = useRef();
+
 
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, isOpen]);
 
   function handleNameChange(evt) {
     setName(evt.target.value);
@@ -26,8 +28,7 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
     onUpdateUser({
       name: name, 
       about: description,
-    });
-    onClose();
+    }, onClose, submitButtonRef);
   }
 
   return (
@@ -37,7 +38,8 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
       name="edit" 
       title="Редактировать профиль" 
       ariaLabel="Редактировать профиль" 
-      buttonTitle="Сохранить"
+      buttonTitle="Cохранить"
+      submitButtonRef={submitButtonRef}
       onSubmit={handleSubmit}
     >
       <input id="name-input" type="text" value={name} onChange={handleNameChange} placeholder="Ваше имя" className="popup__input popup__input-name" name="name" required minLength="2" maxLength="40" />

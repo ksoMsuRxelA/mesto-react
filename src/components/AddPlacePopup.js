@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import PopupWithForm from './PopupWithForm';
 
 const AddPlacePopup = ({isOpen, onClose, onAddCard}) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
+  const submitButtonRef = useRef();
 
   function handleNameChange(evt) {
     setName(evt.target.value);
@@ -13,19 +14,17 @@ const AddPlacePopup = ({isOpen, onClose, onAddCard}) => {
     setLink(evt.target.value);
   }
 
+  function handleInputsReset() {
+    setName('');
+    setLink('');
+  }
+
   function handleSubmit(evt) {
     evt.preventDefault();
     onAddCard({
       name,
       link,
-    });
-    onClose();
-    handleInputsReset();
-  }
-
-  function handleInputsReset() {
-    setName('');
-    setLink('');
+    }, onClose, handleInputsReset, submitButtonRef); //передал сюда как аргументы нужные методы, чтобы на внешнем уровне их использовать, при удачном запросе на сервер. 
   }
 
   return (
@@ -37,6 +36,7 @@ const AddPlacePopup = ({isOpen, onClose, onAddCard}) => {
       ariaLabel="Добавить новую карточку" 
       buttonTitle="Сохранить"
       onSubmit={handleSubmit}
+      submitButtonRef={submitButtonRef}
     >
       <input id="place-input" value={name} onChange={handleNameChange} type="text" placeholder="Название" className="popup__input  popup__input-name" name="name" required minLength="2" maxLength="30" />
       <span className="popup__error-element place-input-error"></span>

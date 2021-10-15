@@ -61,3 +61,5 @@
 @import url('./blocks/popup/__save-button/_type/popup__save-button_type_delete.css');
 @import url('./blocks/popup/__container/_type/popup__container_type_avatar.css');
 @import url('./blocks/popup/__input/_type/popup__input_type_avatar.css');
+
+@import url('./blocks/spinner/spinner.css');
