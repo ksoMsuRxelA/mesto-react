@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Card = ({card, onCardClick, onCardLike, onCardDelete }) => {
+const Card = ({card, onCardClick, onCardLike, onDeleteCard, onCardDelButtonClick }) => {
   const currentUser =  useContext(CurrentUserContext);
 
   const isOwn = card.owner._id === currentUser._id;
@@ -23,8 +23,8 @@ const Card = ({card, onCardClick, onCardLike, onCardDelete }) => {
   }
 
   const handleDeleteClick = () => {
-    onCardDelete(card);
-
+    onDeleteCard(); //открывает попап подтверждения
+    onCardDelButtonClick(card); //передает внещней функции (в App) экземпляр карточки которую нужно удалить.
   }
 
   return (

@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import CardDelete from './CardDelete';
 import { api } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
@@ -14,7 +14,9 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
+  const [cardForDelete, setCardForDelete] = useState({});
   const [currentUser, setCurrentUser] = useState({name: '', about: '', avatar: '', _id: ''});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +39,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
+    setIsDeleteCardPopupOpen(false);
     setSelectedCard({});
   }
 
@@ -52,6 +55,15 @@ function App() {
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
+  const openCardDeletePopup = () => {
+    setIsDeleteCardPopupOpen(!isDeleteCardPopupOpen);
+  }
+
+  function submitButtonDisabling(submitButtonRef) {
+    submitButtonRef.current.setAttribute('disabled', true);
+    submitButtonRef.current.classList.add('popup__save-button_disabled');
+  }
+
   const handleUpdateUser = (newUserInfo, onClose, submitButtonRef) => { //здесь и далее, я получаю методы изнутри компонента, вроде как это не запрещено чек-листом.
     submitButtonRef.current.textContent = "Сохранить..."; //здесь и далее, я использую рефы, которые получаю как аргумент, чтобы создать UX-эффект при загрузке.
     api.patchUserInfo(newUserInfo)
@@ -64,6 +76,7 @@ function App() {
       })
       .finally(() => {
         submitButtonRef.current.textContent = "Сохранить";
+        submitButtonDisabling(submitButtonRef);
       });
   }
 
@@ -80,6 +93,7 @@ function App() {
       })
       .finally(() => {
         submitButtonRef.current.textContent = "Сохранить";
+        submitButtonDisabling(submitButtonRef);
       })
   }
 
@@ -119,16 +133,21 @@ function App() {
       }); //здесь не нужен finally, все по той же причине что и выше. 
   }
 
-  function handleCardDelete(card) { //тут "тупанул", полностью согласен с замечанием, благодарю!
+  function handleCardDelete(card, onClose, submitButtonRef) { //тут "тупанул", полностью согласен с замечанием, благодарю!
+    submitButtonRef.current.textContent = "Да...";
     api.deleteOwnerCard(card._id)
       .then(() => {
         setCards(cards.filter((tmpCard) => {
           return tmpCard._id !== card._id; 
         }));
+        onClose();
       })
       .catch((err) => {
         console.log(`Ошибка при попытке удаления карточки: ${err}.`);
-      });
+      })
+      .finally(() => {
+        submitButtonRef.current.textContent = "Да";
+      })
   }
 
   const handleAddCard = (newCard, onClose, handleInputsReset, submitButtonRef) => {
@@ -144,6 +163,7 @@ function App() {
       })
       .finally(() => {
         submitButtonRef.current.textContent = "Сохранить";
+        submitButtonDisabling(submitButtonRef);
       });
   }
 
@@ -156,11 +176,13 @@ function App() {
             onEditAvatar={openEditAvatarPopup} 
             onEditProfile={openEditProfilePopup}
             onAddPlace={openAddPlacePopup}
+            onDeleteCard={openCardDeletePopup}
             handleCardClick={setSelectedCard}
             cards={cards}
             onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+            // onCardDelete={handleCardDelete}
             isLoading={isLoading}
+            onCardDelButtonClick={setCardForDelete}
           />
           <Footer filler="&copy; 2021 Mesto Russia" />
 
@@ -170,14 +192,15 @@ function App() {
 
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddCard={handleAddCard} />
 
-          <PopupWithForm 
+          <CardDelete isOpen={isDeleteCardPopupOpen} onClose={closeAllPopups} onCardDelete={handleCardDelete} card={cardForDelete} />
+          {/* <PopupWithForm 
             onClose={closeAllPopups}
             isOpen={false} 
             name="delete" 
             title="Вы уверены?" 
             ariaLabel="Удалить карточку с фотографией" 
             buttonTitle="Да" 
-          />
+          /> */}
 
           <ImagePopup 
             onClose={closeAllPopups}

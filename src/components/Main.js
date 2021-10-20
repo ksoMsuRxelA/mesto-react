@@ -3,7 +3,7 @@ import Card from './Card';
 import Spinner from './Spinner';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick, cards, onCardLike, onCardDelete, isLoading}) => {
+const Main = ({onEditAvatar, onEditProfile, onAddPlace, onDeleteCard, onCardDelButtonClick, handleCardClick, cards, onCardLike, isLoading}) => {
   const user = useContext(CurrentUserContext);
 
   return (
@@ -23,7 +23,7 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, handleCardClick, cards, 
       <section className="elements content__elements">    
         {isLoading ? <Spinner /> : cards.map((card) => {
           return (
-            <Card key={card._id} card={card} onCardClick={handleCardClick} onCardLike={onCardLike} onCardDelete={onCardDelete} />
+            <Card key={card._id} card={card} onCardClick={handleCardClick} onCardLike={onCardLike} onDeleteCard={onDeleteCard} onCardDelButtonClick={onCardDelButtonClick} />
         )})}
       </section>
     </main>

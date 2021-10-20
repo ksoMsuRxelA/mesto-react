@@ -41,6 +41,7 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser}) => {
       buttonTitle="Cохранить"
       submitButtonRef={submitButtonRef}
       onSubmit={handleSubmit}
+      handleInputsReset={() => {}}
     >
       <input id="name-input" type="text" value={name} onChange={handleNameChange} placeholder="Ваше имя" className="popup__input popup__input-name" name="name" required minLength="2" maxLength="40" />
       <span className="popup__error-element name-input-error"></span>

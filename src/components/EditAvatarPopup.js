@@ -26,6 +26,7 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
       buttonTitle="Сохранить"
       onSubmit={handleSubmit}
       submitButtonRef={submitButtonRef}
+      handleInputsReset={inputReset}
     >
       <input ref={inputRef} id="url-input-avatar" type="url" placeholder="Ссылка на картинку" className="popup__input popup__input_type_avatar popup__input-link" name="avatar" required />
       <span className="popup__error-element url-input-avatar-error"></span>

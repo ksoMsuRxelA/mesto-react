@@ -37,6 +37,7 @@ const AddPlacePopup = ({isOpen, onClose, onAddCard}) => {
       buttonTitle="Сохранить"
       onSubmit={handleSubmit}
       submitButtonRef={submitButtonRef}
+      handleInputsReset={handleInputsReset}
     >
       <input id="place-input" value={name} onChange={handleNameChange} type="text" placeholder="Название" className="popup__input  popup__input-name" name="name" required minLength="2" maxLength="30" />
       <span className="popup__error-element place-input-error"></span>
