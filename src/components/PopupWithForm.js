@@ -21,7 +21,6 @@ const PopupWithForm = ({name, isOpen, title, children, ariaLabel, buttonTitle, o
   }
 
   function handleClosePopup() {
-    console.log(name);
     onClose();
     handleInputsReset();
     formValidate.clearFormFromErrorMessages();
