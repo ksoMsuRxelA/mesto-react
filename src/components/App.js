@@ -147,7 +147,9 @@ function App() {
       })
       .finally(() => {
         submitButtonRef.current.textContent = "Да";
-      })
+        submitButtonRef.current.removeAttribute('disabled');
+        submitButtonRef.current.classList.remove('popup__save-button_disabled');
+      });
   }
 
   const handleAddCard = (newCard, onClose, handleInputsReset, submitButtonRef) => {

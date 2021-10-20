@@ -21,9 +21,14 @@ const PopupWithForm = ({name, isOpen, title, children, ariaLabel, buttonTitle, o
   }
 
   function handleClosePopup() {
+    console.log(name);
     onClose();
     handleInputsReset();
     formValidate.clearFormFromErrorMessages();
+    if(name === 'delete') {
+      submitButtonRef.current.removeAttribute('disabled');
+      submitButtonRef.current.classList.remove('popup__save-button_disabled');
+    }
   }
 
   return (
